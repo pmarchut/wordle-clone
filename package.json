@@ -9,13 +9,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueuse/core": "^13.0.0",
+    "pinia": "^3.0.1",
     "vue": "^3.5.13"
   },
   "devDependencies": {
+    "@pinia/testing": "^1.0.0",
+    "@testing-library/jest-dom": "^6.6.3",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
+    "jsdom": "^26.0.0",
+    "sass-embedded": "^1.86.0",
     "typescript": "~5.7.2",
     "vite": "^6.2.0",
+    "vitest": "^3.0.9",
     "vue-tsc": "^2.2.4"
   }
 }
