@@ -7,6 +7,7 @@
 // @use '../../shared/foundation/scss/footer.scss';
 // @use '../shared/OfflineTicker/offline-ticker.scss';
 @use './colors.scss';
+@use './sharedStyles.scss';
 @use './shared/spacing/index.scss';
 // @use '../../shared/foundation-game/moments/buttons.scss';
 
@@ -253,4 +254,8 @@ a {
 .pz-games-app .pz-hide-games-app,
 body:not(.pz-hybrid) .pz-hide-web {
   display: none;
+}
+
+#app {
+  height: 100%;
 }

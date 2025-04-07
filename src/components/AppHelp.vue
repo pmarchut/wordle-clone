@@ -17,11 +17,11 @@ import AppTile from './AppTile.vue';
                 role="group" 
                 aria-roledescription="Example"
             >
-                <div data-testid="wordy-letter" class="tileContainer"><AppTile aria-label="1st letter, W, correct" data-state="correct" data-animation="flip-in">w</AppTile></div>
-                <div data-testid="wordy-letter" class="tileContainer"><AppTile aria-label="2nd letter, O" data-state="tbd" data-animation="idle">o</AppTile></div>
-                <div data-testid="wordy-letter" class="tileContainer"><AppTile aria-label="3rd letter, R" data-state="tbd" data-animation="idle">r</AppTile></div>
-                <div data-testid="wordy-letter" class="tileContainer"><AppTile aria-label="4th letter, D" data-state="tbd" data-animation="idle">d</AppTile></div>
-                <div data-testid="wordy-letter" class="tileContainer"><AppTile aria-label="5th letter, Y" data-state="tbd" data-animation="idle">y</AppTile></div>
+                <div data-testid="wordy-letter" class="tileContainer"><AppTile class="small" aria-label="1st letter, W, correct" data-state="correct" data-animation="flip-in">w</AppTile></div>
+                <div data-testid="wordy-letter" class="tileContainer"><AppTile class="small" aria-label="2nd letter, O" data-state="tbd" data-animation="idle">o</AppTile></div>
+                <div data-testid="wordy-letter" class="tileContainer"><AppTile class="small" aria-label="3rd letter, R" data-state="tbd" data-animation="idle">r</AppTile></div>
+                <div data-testid="wordy-letter" class="tileContainer"><AppTile class="small" aria-label="4th letter, D" data-state="tbd" data-animation="idle">d</AppTile></div>
+                <div data-testid="wordy-letter" class="tileContainer"><AppTile class="small" aria-label="5th letter, Y" data-state="tbd" data-animation="idle">y</AppTile></div>
                 <p><strong>W</strong> is in the word and in the correct spot.</p>
             </div>
             <div 
@@ -30,11 +30,11 @@ import AppTile from './AppTile.vue';
                 role="group" 
                 aria-roledescription="Example"
             >
-                <div data-testid="light-letter" class="tileContainer"><AppTile aria-label="1st letter, L" data-state="tbd" data-animation="idle">l</AppTile></div>
-                <div data-testid="light-letter" class="tileContainer"><AppTile aria-label="2nd letter, I, present in another position" data-state="present" data-animation="flip-in">i</AppTile></div>
-                <div data-testid="light-letter" class="tileContainer"><AppTile aria-label="3rd letter, G" data-state="tbd" data-animation="idle">g</AppTile></div>
-                <div data-testid="light-letter" class="tileContainer"><AppTile aria-label="4th letter, H" data-state="tbd" data-animation="idle">h</AppTile></div>
-                <div data-testid="light-letter" class="tileContainer"><AppTile aria-label="5th letter, T" data-state="tbd" data-animation="idle">t</AppTile></div>
+                <div data-testid="light-letter" class="tileContainer"><AppTile class="small" aria-label="1st letter, L" data-state="tbd" data-animation="idle">l</AppTile></div>
+                <div data-testid="light-letter" class="tileContainer"><AppTile class="small" aria-label="2nd letter, I, present in another position" data-state="present" data-animation="flip-in">i</AppTile></div>
+                <div data-testid="light-letter" class="tileContainer"><AppTile class="small" aria-label="3rd letter, G" data-state="tbd" data-animation="idle">g</AppTile></div>
+                <div data-testid="light-letter" class="tileContainer"><AppTile class="small" aria-label="4th letter, H" data-state="tbd" data-animation="idle">h</AppTile></div>
+                <div data-testid="light-letter" class="tileContainer"><AppTile class="small" aria-label="5th letter, T" data-state="tbd" data-animation="idle">t</AppTile></div>
                 <p><strong>I</strong> is in the word but in the wrong spot.</p>
             </div>
             <div 
@@ -43,11 +43,11 @@ import AppTile from './AppTile.vue';
                 role="group" 
                 aria-roledescription="Example"
             >
-                <div data-testid="rogue-letter" class="tileContainer"><AppTile aria-label="1st letter, R" data-state="tbd" data-animation="idle">r</AppTile></div>
-                <div data-testid="rogue-letter" class="tileContainer"><AppTile aria-label="2nd letter, O" data-state="tbd" data-animation="idle">o</AppTile></div>
-                <div data-testid="rogue-letter" class="tileContainer"><AppTile aria-label="3rd letter, G" data-state="tbd" data-animation="idle">g</AppTile></div>
-                <div data-testid="rogue-letter" class="tileContainer"><AppTile aria-label="4th letter, U, absent" data-state="absent" data-animation="flip-in">u</AppTile></div>
-                <div data-testid="rogue-letter" class="tileContainer"><AppTile aria-label="5th letter, E" data-state="tbd" data-animation="idle">e</AppTile></div>
+                <div data-testid="rogue-letter" class="tileContainer"><AppTile class="small" aria-label="1st letter, R" data-state="tbd" data-animation="idle">r</AppTile></div>
+                <div data-testid="rogue-letter" class="tileContainer"><AppTile class="small" aria-label="2nd letter, O" data-state="tbd" data-animation="idle">o</AppTile></div>
+                <div data-testid="rogue-letter" class="tileContainer"><AppTile class="small" aria-label="3rd letter, G" data-state="tbd" data-animation="idle">g</AppTile></div>
+                <div data-testid="rogue-letter" class="tileContainer"><AppTile class="small" aria-label="4th letter, U, absent" data-state="absent" data-animation="flip-in">u</AppTile></div>
+                <div data-testid="rogue-letter" class="tileContainer"><AppTile class="small" aria-label="5th letter, E" data-state="tbd" data-animation="idle">e</AppTile></div>
                 <p><strong>U</strong> is not in the word in any spot.</p>
             </div>
         </div>

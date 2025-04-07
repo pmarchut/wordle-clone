@@ -31,7 +31,7 @@ const handleAnimationEnd = () => {
 
 <template>
   <div 
-    class="tile small"
+    class="tile"
     role="img"
     aria-roledescription="tile"
     :aria-label="ariaLabel"

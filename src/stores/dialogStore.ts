@@ -9,9 +9,9 @@ export interface dialogProps {
 export const useDialogs = defineStore("dialogs", {
   state: () => ({
     dialog: {
-        type: "help Dialog",
-        id: "help-dialog",
-        heading: "How to Play",
+      type: "help Dialog",
+      id: "help-dialog",
+      heading: "How to Play",
     } as dialogProps | null,
   }),
 
@@ -31,7 +31,7 @@ export const useDialogs = defineStore("dialogs", {
       };
     },
     hideDialog() {
-        this.dialog = null;
+      this.dialog = null;
     }
   },
 });

@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { mount } from "@vue/test-utils";
+import { mount, flushPromises } from "@vue/test-utils";
 import { useLocalStorage } from "@vueuse/core";
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import App from "../src/App.vue";
 import { createTestingPinia } from "@pinia/testing";
 import { setActivePinia } from "pinia";
 import { useDialogs } from "../src/stores/dialogStore";
+import { useGuesses } from "../src/stores/guessesStore";
+import { useToasts } from "../src/stores/toastStore";
 import type { dialogProps } from "../src/stores/dialogStore";
 
 // Mockujemy `useLocalStorage`
@@ -13,12 +15,16 @@ vi.mock("@vueuse/core", () => ({
   useLocalStorage: vi.fn(),
 }));
 
+vi.useFakeTimers(); // 🔥 Mockujemy setTimeout dla Vitest
+
 // 📌 Factory do montowania komponentu App
 const factoryMount = (dialogsState: dialogProps | null = null) => {
   const pinia = createTestingPinia({ createSpy: vi.fn }); // Tworzymy testową Pinia
 
   setActivePinia(pinia);
   const dialogs = useDialogs(); // Pobieramy store
+  const guesses = useGuesses()
+  const toasts = useToasts()
 
   dialogs.dialog = dialogsState; // Ustawiamy stan dialogu
 
@@ -42,12 +48,45 @@ const factoryMount = (dialogsState: dialogProps | null = null) => {
     }
   });
 
-  return mount(App, {
-    global: {
-      plugins: [pinia], // Przekazujemy Pinia
-    },
-    attachTo: document.body, // Dla testów interakcji
-  });
+  toasts.toasts = []
+
+  toasts.showToast = vi.fn((message: string) => {
+    const id = toasts.toasts.length
+
+    toasts.toasts.push({ id, message })
+
+    setTimeout(() => toasts.closeToast(id), 3000)
+  })
+
+  toasts.closeToast = vi.fn((id: number) => {
+    toasts.toasts = toasts.toasts.filter((toast) => toast.id !== id)
+  })
+
+  guesses.guesses = ['', '', '', '', '', '']
+  guesses.checks = [false, false, false, false, false, false]
+  guesses.invalid = false
+
+  guesses.handleEnter = vi.fn(() => {
+    if (!guesses.canSubmit) {
+      guesses.invalid = true
+      toasts.showToast("Not enough letters");
+      setTimeout(() => {
+        guesses.invalid = false
+      }, 600)
+    }
+  })
+
+  return {
+    wrapper: mount(App, {
+      global: {
+        plugins: [pinia], // Przekazujemy Pinia
+      },
+      attachTo: document.body, // Dla testów interakcji
+    }),
+    dialogs,
+    guesses,
+    toasts,
+  };
 };
 
 describe("App.vue", () => {
@@ -78,7 +117,7 @@ describe("App.vue", () => {
   });
 
   it('shows the "How to Play" dialog on initial load and hides the dialog when clicking outside of it', async () => {
-    const wrapper = factoryMount({ 
+    const { wrapper } = factoryMount({ 
       type: "help Dialog", 
       id: "help-dialog",
       heading: "How to Play", 
@@ -100,7 +139,7 @@ describe("App.vue", () => {
   });
 
   it('shows the "How to Play" dialog on initial load and hides the dialog when clicking on close button', async () => {
-    const wrapper = factoryMount({ 
+    const { wrapper } = factoryMount({ 
       type: "help Dialog", 
       id: "help-dialog",
       heading: "How to Play",
@@ -117,7 +156,7 @@ describe("App.vue", () => {
   });
 
   it('opens "How to Play" dialog and closes dropdown', async () => {
-    const wrapper = factoryMount();
+    const { wrapper } = factoryMount();
     const helpButton = wrapper.find('[data-testid="help-button"]');
 
     let dialog = wrapper.find('[data-testid="modal-overlay"]');
@@ -141,7 +180,7 @@ describe("App.vue", () => {
   });
 
   it('opens "Settings" dialog', async () => {
-    const wrapper = factoryMount();
+    const { wrapper } = factoryMount();
     const settingsButton = wrapper.find('[data-testid="settings-button"]');
 
     let dialog = wrapper.find('[data-testid="modal-overlay"]');
@@ -156,5 +195,36 @@ describe("App.vue", () => {
     expect(dialog.findComponent({ name: "AppSettings" }).exists()).toBe(true);
     expect(dialog.find('[data-testid="modal-content"]').classes()).not.toContain("extraPadding");
     expect(dialog.find('[data-testid="modal-heading"]').classes()).not.toContain("newHeading");
+  });
+
+  it('shows animation and toast when not enough letters', async () => {
+    const { wrapper } = factoryMount();
+    const enterButton = wrapper.find('[data-key="↵"]')
+
+    await enterButton.trigger('click')
+
+    expect(wrapper.find('[aria-label="Row 1"]').classes()).toContain('invalid')
+
+    const toastContainer = wrapper.find('[id="gameToaster"]')
+
+    expect(toastContainer.find('[aria-live="polite"]').text()).toBe('Not enough letters')
+
+    vi.runAllTimers();
+    await nextTick();
+
+    expect(wrapper.find('[aria-label="Row 1"]').classes()).not.toContain('invalid')
+    expect(toastContainer.find('[aria-live="polite"]').exists()).toBe(false)
+
+    await enterButton.trigger('click')
+
+    expect(wrapper.find('[aria-label="Row 1"]').classes()).toContain('invalid')
+
+    expect(toastContainer.find('[aria-live="polite"]').text()).toBe('Not enough letters')
+
+    vi.runAllTimers();
+    await nextTick();
+
+    expect(wrapper.find('[aria-label="Row 1"]').classes()).not.toContain('invalid')
+    expect(toastContainer.find('[aria-live="polite"]').exists()).toBe(false)
   });
 });
