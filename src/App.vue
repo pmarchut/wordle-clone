@@ -6,11 +6,18 @@ import TheDialog from "./components/TheDialog.vue";
 import TheGame from "./components/TheGame.vue";
 import ToastContainer from "./components/ToastContainer.vue";
 import { useDialogs } from "./stores/dialogStore";
+import { useWords } from "./stores/wordsStore";
+import { onMounted } from "vue";
 
 // Pobieramy wartość z localStorage
 const wordleDarkmode = useLocalStorage("wordle-darkmode", true);
 const wordleColorblind = useLocalStorage("wordle-colorblind", false);
 const dialogs = useDialogs();
+const words = useWords();
+
+onMounted(async () => {
+    await words.init(); // Ładujemy listę i wybieramy hasło
+});
 
 // Obserwujemy zmiany i aktualizujemy klasę body
 watch(wordleDarkmode, (isDark) => {

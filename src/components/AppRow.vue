@@ -6,6 +6,7 @@ import type { BoardLetter } from '../types';
 const props = defineProps<{
   ariaLabel: string;
   word?: string;
+  wordCheckResults: string[];
 }>();
 
 function setLetter (previous: BoardLetter | undefined, index: number) {
@@ -14,9 +15,9 @@ function setLetter (previous: BoardLetter | undefined, index: number) {
   if (letterAtIndex) {
     return {
       letter: letterAtIndex,
-      ariaLabel: letterAtIndex,
-      state: 'tbd',
-      dataAnimation: !previous?.letter ? 'pop' : undefined
+      ariaLabel: props.wordCheckResults[index] ? `${letterAtIndex}, ${props.wordCheckResults[index]}` : letterAtIndex,
+      state: props.wordCheckResults[index] || 'tbd',
+      dataAnimation: props.wordCheckResults[index] ? 'flip-in' : (!previous?.letter ? 'pop' : undefined)
     }
   } else {
     return {
@@ -51,11 +52,11 @@ const fifthLetter = computed((previous: BoardLetter | undefined) => {
     role="group" 
     :aria-label="props.ariaLabel"
   >
-    <div class="" style="animation-delay: 0ms;"><AppTile v-bind="firstLetter" :aria-label="`1st letter, ${firstLetter.ariaLabel}`">{{ firstLetter.letter }}</AppTile></div>
-    <div class="" style="animation-delay: 100ms;"><AppTile v-bind="secondLetter" :aria-label="`2nd letter, ${secondLetter.ariaLabel}`">{{ secondLetter.letter }}</AppTile></div>
-    <div class="" style="animation-delay: 200ms;"><AppTile v-bind="thirdLetter" :aria-label="`3rd letter, ${thirdLetter.ariaLabel}`">{{ thirdLetter.letter }}</AppTile></div>
-    <div class="" style="animation-delay: 300ms;"><AppTile v-bind="fourthLetter" :aria-label="`4th letter, ${fourthLetter.ariaLabel}`">{{ fourthLetter.letter }}</AppTile></div>
-    <div class="" style="animation-delay: 400ms;"><AppTile v-bind="fifthLetter" :aria-label="`5th letter, ${fifthLetter.ariaLabel}`">{{ fifthLetter.letter }}</AppTile></div>
+    <AppTile v-bind="firstLetter" :aria-label="`1st letter, ${firstLetter.ariaLabel}`">{{ firstLetter.letter }}</AppTile>
+    <AppTile v-bind="secondLetter" :aria-label="`2nd letter, ${secondLetter.ariaLabel}`">{{ secondLetter.letter }}</AppTile>
+    <AppTile v-bind="thirdLetter" :aria-label="`3rd letter, ${thirdLetter.ariaLabel}`">{{ thirdLetter.letter }}</AppTile>
+    <AppTile v-bind="fourthLetter" :aria-label="`4th letter, ${fourthLetter.ariaLabel}`">{{ fourthLetter.letter }}</AppTile>
+    <AppTile v-bind="fifthLetter" :aria-label="`5th letter, ${fifthLetter.ariaLabel}`">{{ fifthLetter.letter }}</AppTile>
   </div>
 </template>
 

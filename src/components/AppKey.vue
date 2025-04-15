@@ -1,11 +1,28 @@
 <script setup lang="ts">
+import { onMounted, onBeforeUnmount, ref } from 'vue'
+
 const props = defineProps<{
   ariaLabel: string,
   dataKey: string,
   ariaDisabled: boolean,
+  dataState?: string,
   spacerBefore?: boolean,
   spacerAfter?: boolean,
 }>();
+
+const btn = ref<HTMLButtonElement | null>(null)
+
+const onBtnMouseDown = (e: MouseEvent) => {
+  e.preventDefault()
+}
+
+onMounted(() => {
+  btn.value?.addEventListener('mousedown', onBtnMouseDown)
+})
+
+onBeforeUnmount(() => {
+  btn.value?.removeEventListener('mousedown', onBtnMouseDown)
+})
 </script>
 
 <template>
@@ -14,13 +31,16 @@ const props = defineProps<{
     data-testid="spacer" 
     class="half"
   ></div>
-  <button 
+  <button
+    ref="btn"
+    :tabindex="0" 
     type="button" 
     class="key"
     v-bind="$attrs"
     :aria-label="props.ariaLabel"
     :data-key="props.dataKey"
     :aria-disabled="props.ariaDisabled"
+    :data-state="props.dataState"
   >
     <slot></slot>
   </button>

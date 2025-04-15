@@ -6,10 +6,9 @@ import { setActivePinia } from "pinia";
 import { useGuesses } from "../src/stores/guessesStore";
 
 // 📌 Factory do montowania komponentu GameBoard
-const factoryMount = (stateProp?: { guesses?: string[], checks?: boolean[] }) => {
+const factoryMount = (stateProp?: { guesses?: string[] }) => {
     const defaultState = { 
         guesses: ['', '', '', '', '', ''],
-        checks: [false, false, false, false, false, false]
     };
     const state = { ...defaultState, ...stateProp }
     const pinia = createTestingPinia({ createSpy: vi.fn }); // Tworzymy testową Pinia
@@ -18,7 +17,6 @@ const factoryMount = (stateProp?: { guesses?: string[], checks?: boolean[] }) =>
     const guesses = useGuesses(); // Pobieramy store
   
     guesses.guesses = state.guesses
-    guesses.checks = state.checks
   
     return mount(GameBoard, {
       global: {

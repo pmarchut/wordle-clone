@@ -12,10 +12,12 @@ export const useToasts = defineStore("toasts", {
   }),
 
   actions: {
-    showToast(message: string) {
+    showToast(message: string, keep: boolean = false) {
       const id = this.toasts.length
 
       this.toasts.push({ id, message })
+
+      if (keep) return
 
       setTimeout(() => this.closeToast(id), 3000)
     },

@@ -3,8 +3,11 @@ import { mount } from "@vue/test-utils";
 import AppRow from "../src/components/AppRow.vue";
 
 // 📌 Factory do montowania komponentu AppRow
-const factoryMount = (props?: { ariaLabel?: string, word?: string }) => {
-    const defaultProps = { ariaLabel: 'Row 1' };
+const factoryMount = (props?: { ariaLabel?: string, word?: string, wordCheckResults?: string[] }) => {
+    const defaultProps = { 
+        ariaLabel: 'Row 1',
+        wordCheckResults: ['', '', '', '', ''] 
+    };
 
     return mount(AppRow, { props: { ...defaultProps, ...props } });
 };

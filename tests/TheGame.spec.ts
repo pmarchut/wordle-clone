@@ -12,23 +12,20 @@ const factoryMount = () => {
     const guesses = useGuesses(); 
 
     guesses.guesses = ['', '', '', '', '', '']
-    guesses.checks = [false, false, false, false, false, false]
 
     guesses.enterLetter = vi.fn((letter: string) => {
-        const guessIndex = guesses.checks.findIndex((check) => check === false);
-        if (guessIndex === -1) return;
+        if (guesses.guessIndex === -1) return;
 
-        if (guesses.guesses[guessIndex].length < 5) {
+        if (guesses.guesses[guesses.guessIndex].length < 5) {
             guesses.guesses = guesses.guesses.map((guess, index) =>
-            index === guessIndex ? guess + letter : guess
+            index === guesses.guessIndex ? guess + letter : guess
         )}
     });
     guesses.handleBackspace = vi.fn(() => {
         if (!guesses.canBackspace) return; // Używamy getter zamiast sprawdzać w akcji
 
-        const guessIndex = guesses.checks.findIndex((check) => check === false);
         guesses.guesses = guesses.guesses.map((guess, index) =>
-            index === guessIndex ? guess.slice(0, -1) : guess
+            index === guesses.guessIndex ? guess.slice(0, -1) : guess
         );
     });
 

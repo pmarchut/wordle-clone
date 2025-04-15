@@ -19,28 +19,28 @@ const factoryMount = () => {
     const guesses = useGuesses(); // Pobieramy store
 
     guesses.guesses = ['', '', '', '', '', '']
-    guesses.checks = [false, false, false, false, false, false]
 
     guesses.enterLetter = vi.fn((letter: string) => {
-        const guessIndex = guesses.checks.findIndex((check) => check === false);
-        if (guessIndex === -1) return;
+        if (guesses.guessIndex === -1) return;
 
-        if (guesses.guesses[guessIndex].length < 5) {
+        if (guesses.guesses[guesses.guessIndex].length < 5) {
             guesses.guesses = guesses.guesses.map((guess, index) =>
-            index === guessIndex ? guess + letter : guess
+            index === guesses.guessIndex ? guess + letter : guess
         )}
     });
     guesses.handleBackspace = vi.fn(() => {
         if (!guesses.canBackspace) return; // Używamy getter zamiast sprawdzać w akcji
 
-        const guessIndex = guesses.checks.findIndex((check) => check === false);
         guesses.guesses = guesses.guesses.map((guess, index) =>
-            index === guessIndex ? guess.slice(0, -1) : guess
+            index === guesses.guessIndex ? guess.slice(0, -1) : guess
         );
     });
 
     return { 
-        wrapper: mount(GameKeyboard, { global: { plugins: [pinia] } }),
+        wrapper: mount(GameKeyboard, { 
+            global: { plugins: [pinia] },
+            attachTo: document.body, // Dla testów interakcji 
+        }),
         guesses
     };
 };
@@ -103,5 +103,68 @@ describe("GameKeyboard.vue", () => {
       
         expect(enterLetterSpy).not.toHaveBeenCalled();
         expect(handleBackspaceSpy).not.toHaveBeenCalled();
+    });
+
+    it("does not call enterLetter again when Enter is pressed after focusing a letter button", async () => {
+        const { wrapper, guesses } = factoryMount();
+    
+        const enterLetterSpy = vi.spyOn(guesses, "enterLetter");
+        const handleEnterSpy = vi.fn();
+        guesses.handleEnter = handleEnterSpy;
+    
+        const letterButton = wrapper.find('[data-key="a"]');
+    
+        // 🔍 Ręcznie ustawiamy DOM-owy focus
+        letterButton.element.focus();
+    
+        // ✅ Klik — enterLetter się wywoła
+        await letterButton.trigger("click");
+    
+        // ❗️ Naciśnięcie Enter (ale my symulujemy DOM-owe zachowanie: click przez Enter)
+        // UWAGA: normalnie przeglądarka sama robi `click()` na `document.activeElement`, tu musimy to wymusić
+        document.activeElement?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    
+        // 🧠 Dodatkowo: keydown dla obsługi handleEnter
+        window.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+    
+        await nextTick();
+    
+        // 👉 enterLetter powinno się wywołać tylko raz (tylko przy kliknięciu)
+        expect(enterLetterSpy).toHaveBeenCalledTimes(1);
+    
+        // 👉 handleEnter powinno się odpalić na Enter
+        expect(handleEnterSpy).toHaveBeenCalled();
+    });
+
+    it("does not call handleEnter when Enter is pressed while a key is focused", async () => {
+        const { wrapper, guesses } = factoryMount();
+      
+        const handleEnterSpy = vi.fn();
+        guesses.handleEnter = handleEnterSpy;
+      
+        const letterButton = wrapper.find('[data-key="a"]');
+      
+        // ręczne ustawienie activeElement
+        Object.defineProperty(document, 'activeElement', {
+          configurable: true,
+          get: () => letterButton.element,
+        });
+      
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+        await nextTick();
+      
+        expect(handleEnterSpy).not.toHaveBeenCalled();
+    });
+
+    it('calls preventDefault on mousedown to preserve focus', async () => {
+        const { wrapper } = factoryMount();
+        const button = wrapper.find('[data-key="a"]');
+      
+        const event = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+        const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+      
+        button.element.dispatchEvent(event);
+      
+        expect(preventDefaultSpy).toHaveBeenCalled();
     });
 });
