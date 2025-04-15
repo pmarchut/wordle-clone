@@ -6,11 +6,12 @@ export default defineConfig({
   plugins: [vue()],
   server: {
     proxy: {
-      '/api': {
-        target: 'https://fly.wordfinderapi.com/api',
+      '/.netlify/functions/wordlist': {
+        target: 'https://fly.wordfinderapi.com',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, '')
-      }
-    }
-  }
+        rewrite: () =>
+          '/api/search?length=5&word_sorting=az&group_by_length=true&page_size=99999&dictionary=all_en',
+      },
+    },
+  },
 })

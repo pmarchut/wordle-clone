@@ -2,7 +2,7 @@ let cachedWord: string | null = null;
 
 export async function fetchWordList(): Promise<string[]> {
     try {
-        const res = await fetch("/api/search?length=5&word_sorting=az&group_by_length=true&page_size=99999&dictionary=all_en");
+        const res = await fetch("/.netlify/functions/wordlist");
         const data = await res.json();
         const wordList = data?.word_pages[0]?.word_list;
 
